@@ -64,13 +64,22 @@ export default function Dashboard({ progress, onNavigate }) {
       <h3 style={{ fontSize: '22px', marginBottom: 'var(--space-lg)' }}>🎮 Choose Your Game</h3>
       <div className="game-modes" style={{ marginBottom: 'var(--space-2xl)' }}>
         <div
+          className="game-mode-card featured-game-card"
+          style={{ '--mode-gradient': 'linear-gradient(135deg, rgba(254, 202, 87, 0.25), rgba(108, 92, 231, 0.2))' }}
+          onClick={() => onNavigate('az')}
+        >
+          <span className="game-mode-icon">🔤</span>
+          <div className="game-mode-name">A-Z Korean Alphabet Basics</div>
+          <div className="game-mode-desc">Learn Korean from English A-Z! Audio pronunciation & 10x screen writing with AI check.</div>
+        </div>
+        <div
           className="game-mode-card"
           style={{ '--mode-gradient': 'linear-gradient(135deg, rgba(108, 92, 231, 0.15), transparent)' }}
           onClick={() => onNavigate('learn')}
         >
           <span className="game-mode-icon">✍️</span>
-          <div className="game-mode-name">Writing Practice</div>
-          <div className="game-mode-desc">Write each Korean word 10 times to build muscle memory!</div>
+          <div className="game-mode-name">Word Writing Practice</div>
+          <div className="game-mode-desc">Write each Korean word 10 times to build muscle memory with AI checking!</div>
         </div>
         <div
           className="game-mode-card"

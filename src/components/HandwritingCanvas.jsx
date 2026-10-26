@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { speakKorean } from '../hooks/useUtils';
+import { evaluateHandwriting } from '../utils/aiHandwritingChecker';
 
 const BRUSH_COLORS = [
   { name: 'Korean Indigo', color: '#6C5CE7' },
@@ -28,14 +29,18 @@ export default function HandwritingCanvas({
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [strokes, setStrokes] = useState([]); // array of stroke paths
-  const [currentStroke, setCurrentStroke] = useState([]);
-  const [brushColor, setBrushColor] = useState(BRUSH_COLORS[1].color); // Cyan by default
+  const [strokes, setStrokes] = useState([]);
+  const [brushColor, setBrushColor] = useState(BRUSH_COLORS[1].color);
   const [brushSize, setBrushSize] = useState(8);
   const [showGuide, setShowGuide] = useState(true);
   const [showGrid, setShowGrid] = useState(true);
-  const [guideOpacity, setGuideOpacity] = useState(0.22);
-  const [hasDrawn, setHasDrawn] = useState(false);
+  const [guideOpacity, setGuideOpacity] = useState(0.25);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [speechRate, setSpeechRate] = useState(0.8); // 0.8 beginner friendly
+
+  // AI Evaluation State
+  const [aiResult, setAiResult] = useState(null);
+  const [isEvaluating, setIsEvaluating] = useState(false);
 
   // Resize canvas to match display size with DPR scaling
   const setupCanvas = useCallback(() => {
@@ -56,7 +61,11 @@ export default function HandwritingCanvas({
   useEffect(() => {
     setupCanvas();
     window.addEventListener('resize', setupCanvas);
-    return () => window.removeEventListener('resize', setupCanvas);
+    window.addEventListener('orientationchange', setupCanvas);
+    return () => {
+      window.removeEventListener('resize', setupCanvas);
+      window.removeEventListener('orientationchange', setupCanvas);
+    };
   }, [setupCanvas]);
 
   // Redraw guide, grid, and strokes
@@ -99,21 +108,25 @@ export default function HandwritingCanvas({
         // Inner margin frame
         ctx.setLineDash([]);
         ctx.strokeStyle = 'rgba(108, 92, 231, 0.25)';
-        ctx.strokeRect(20, 20, width - 40, height - 40);
+        ctx.strokeRect(16, 16, width - 32, height - 32);
         ctx.restore();
       }
 
       // 2. Faint Watermark Korean Character Guide
       if (showGuide && targetWord) {
         ctx.save();
-        ctx.font = `bold ${Math.min(height * 0.52, width / (targetWord.length > 2 ? targetWord.length * 0.75 : 2.2))}px 'Noto Sans KR', sans-serif`;
+        const fontSize = Math.min(
+          height * 0.52,
+          width / (targetWord.length > 2 ? targetWord.length * 0.72 : 2.1)
+        );
+        ctx.font = `bold ${fontSize}px 'Noto Sans KR', sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = `rgba(255, 255, 255, ${guideOpacity})`;
         ctx.fillText(targetWord, width / 2, height / 2);
 
-        // Optional stroke outline guide
-        ctx.strokeStyle = `rgba(162, 155, 254, ${guideOpacity * 1.5})`;
+        // Subtle guide outline
+        ctx.strokeStyle = `rgba(162, 155, 254, ${guideOpacity * 1.6})`;
         ctx.lineWidth = 1.5;
         ctx.strokeText(targetWord, width / 2, height / 2);
         ctx.restore();
@@ -159,7 +172,7 @@ export default function HandwritingCanvas({
     redraw(strokes);
   }, [redraw, strokes, showGuide, showGrid, guideOpacity, targetWord]);
 
-  // Pointer position helper
+  // Pointer position helper with scroll support
   const getPointerPos = (e) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
@@ -175,13 +188,11 @@ export default function HandwritingCanvas({
     canvasRef.current.setPointerCapture(e.pointerId);
     const pos = getPointerPos(e);
     setIsDrawing(true);
-    setHasDrawn(true);
     const newStroke = {
       color: brushColor,
       size: brushSize,
       points: [pos],
     };
-    setCurrentStroke(newStroke);
     const updated = [...strokes, newStroke];
     setStrokes(updated);
     redraw(updated);
@@ -215,12 +226,14 @@ export default function HandwritingCanvas({
     } catch {
       // ignore
     }
+
+    // Auto run quick AI check when user lifts finger/pen
+    runAICheck();
   };
 
-  // Canvas Actions
   const handleClear = () => {
     setStrokes([]);
-    setHasDrawn(false);
+    setAiResult(null);
     redraw([]);
   };
 
@@ -228,48 +241,85 @@ export default function HandwritingCanvas({
     if (strokes.length === 0) return;
     const next = strokes.slice(0, -1);
     setStrokes(next);
-    if (next.length === 0) setHasDrawn(false);
     redraw(next);
+    if (next.length > 0) {
+      setTimeout(() => runAICheck(next), 50);
+    } else {
+      setAiResult(null);
+    }
   };
 
+  // Run AI Handwriting Verification
+  const runAICheck = (currentStrokes = strokes) => {
+    const canvas = canvasRef.current;
+    if (!canvas || currentStrokes.length === 0) return;
+
+    setIsEvaluating(true);
+    setTimeout(() => {
+      const evaluation = evaluateHandwriting(canvas, targetWord, currentStrokes);
+      setAiResult(evaluation);
+      setIsEvaluating(false);
+    }, 120);
+  };
+
+  // Audio Pronunciation Trigger
+  const handlePronounce = () => {
+    setIsSpeaking(true);
+    speakKorean(targetWord, speechRate);
+    setTimeout(() => setIsSpeaking(false), 1600);
+  };
+
+  // Save attempt and advance
   const handleSaveAndNext = () => {
     if (strokes.length === 0) {
-      alert('Screen par pehle word likhein! (Draw the Korean word on the screen first)');
+      alert('Pehle screen par likhein! (Draw on the screen first)');
       return;
     }
 
     const canvas = canvasRef.current;
-    // Capture user drawing
     const thumbnail = canvas.toDataURL('image/png');
 
-    // Trigger parent callback
+    // Run AI check if not done
+    const evaluation = aiResult || evaluateHandwriting(canvas, targetWord, strokes);
+
     if (onSaveAttempt) {
-      onSaveAttempt(thumbnail);
+      onSaveAttempt(thumbnail, evaluation);
     }
 
-    // Reset for next attempt
+    // Reset for next stroke
     setStrokes([]);
-    setHasDrawn(false);
+    setAiResult(null);
     redraw([]);
   };
 
   return (
     <div className="handwriting-container" ref={containerRef}>
-      {/* Top Bar with Word Info and Pronounce */}
+      {/* Top Bar with Word Info and Audio */}
       <div className="handwriting-header">
         <div className="handwriting-word-info">
           <span className="handwriting-english">{english}</span>
           <div className="handwriting-korean-row">
             <span className="handwriting-korean-guide">{targetWord}</span>
             <button
-              className="speak-btn"
-              onClick={() => speakKorean(targetWord)}
-              title="Hear Korean pronunciation"
+              className={`speak-btn ${isSpeaking ? 'speaking-active' : ''}`}
+              onClick={handlePronounce}
+              title="Click to hear Korean pronunciation"
             >
-              🔊 Listen
+              <span className="speak-icon">🔊</span>
+              <span>{isSpeaking ? 'Bol raha hai...' : 'Pronounce'}</span>
+              {isSpeaking && <span className="audio-wave-dot" />}
+            </button>
+            <button
+              className="speed-toggle-btn"
+              onClick={() => setSpeechRate(speechRate === 0.8 ? 1.0 : 0.8)}
+              title="Change speech speed"
+            >
+              {speechRate === 0.8 ? '🐢 Slow (0.8x)' : '⚡ Normal (1.0x)'}
             </button>
           </div>
-          <span className="handwriting-romanization">{romanization}</span>
+          <span className="handwriting-romanization">
+            Phonetic: <strong>{romanization}</strong>
+          </span>
         </div>
 
         {/* Repetition Badge */}
@@ -283,10 +333,10 @@ export default function HandwritingCanvas({
         </div>
       </div>
 
-      {/* Screen Canvas Container */}
+      {/* Screen Canvas Container (Mobile Touch & Pointer Friendly) */}
       <div className="canvas-wrapper">
         <div className="canvas-badge-tip">
-          ✍️ Finger, Touch, Stylus ya Mouse se screen par likhein
+          ✍️ Ungli (Finger), Touchscreen, Pen ya Mouse se screen par likhein
         </div>
 
         <canvas
@@ -299,6 +349,23 @@ export default function HandwritingCanvas({
           style={{ touchAction: 'none' }}
         />
       </div>
+
+      {/* AI Stroke Feedback Card (Instant AI Evaluation) */}
+      {aiResult && strokes.length > 0 && (
+        <div className={`ai-feedback-banner ${aiResult.isMatch ? 'ai-match' : 'ai-improving'}`}>
+          <div className="ai-feedback-header">
+            <div className="ai-badge-chip">
+              🤖 AI Stroke Evaluator
+            </div>
+            <div className="ai-stars">
+              {'⭐'.repeat(aiResult.stars)}
+              <span className="ai-score-pill">{aiResult.accuracy}% Accuracy</span>
+            </div>
+          </div>
+          <div className="ai-verdict">{aiResult.verdict}</div>
+          <div className="ai-message">{aiResult.feedback}</div>
+        </div>
+      )}
 
       {/* Controls Bar */}
       <div className="canvas-controls-bar">
@@ -320,7 +387,7 @@ export default function HandwritingCanvas({
 
         {/* Brush Size */}
         <div className="control-group">
-          <span className="control-label">Pen Size:</span>
+          <span className="control-label">Brush:</span>
           <div className="brush-sizes">
             {BRUSH_SIZES.map((b) => (
               <button
@@ -373,7 +440,7 @@ export default function HandwritingCanvas({
         </div>
       </div>
 
-      {/* Primary Submit Button for this attempt */}
+      {/* Primary Submit Button with AI check */}
       <div className="canvas-submit-row">
         <button
           className="btn btn-primary btn-lg submit-attempt-btn"

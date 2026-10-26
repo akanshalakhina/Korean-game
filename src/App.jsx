@@ -4,6 +4,7 @@ import { ToastContainer, XPPopups } from './components/Toast';
 import Dashboard from './pages/Dashboard';
 import WritingPractice from './pages/WritingPractice';
 import HangulPage from './pages/HangulPage';
+import AlphabetAZPage from './pages/AlphabetAZPage';
 import SentencePractice from './pages/SentencePractice';
 import QuizGame from './pages/QuizGame';
 import MemoryMatch from './pages/MemoryMatch';
@@ -37,7 +38,7 @@ export default function App() {
     setActiveView(view);
     setSelectedCategory(categoryId || null);
     setSidebarOpen(false);
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const renderView = () => {
@@ -51,6 +52,8 @@ export default function App() {
     switch (activeView) {
       case 'dashboard':
         return <Dashboard {...sharedProps} onNavigate={handleNavigate} />;
+      case 'az':
+        return <AlphabetAZPage {...sharedProps} />;
       case 'learn':
         return <WritingPractice {...sharedProps} selectedCategory={selectedCategory} />;
       case 'hangul':
@@ -71,9 +74,24 @@ export default function App() {
   return (
     <>
       <div className="app-bg" />
-      <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
-        {sidebarOpen ? '✕' : '☰'}
-      </button>
+
+      {/* Mobile Top Header */}
+      <header className="mobile-header">
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label="Toggle menu"
+        >
+          {sidebarOpen ? '✕' : '☰'}
+        </button>
+        <div className="mobile-header-title">
+          <span className="mobile-flag">🇰🇷</span>
+          <span>Korean Quest</span>
+        </div>
+        <div className="mobile-streak-chip">
+          🔥 {progress.streak}d
+        </div>
+      </header>
 
       <div className="app-layout">
         <Sidebar
@@ -87,6 +105,45 @@ export default function App() {
           {renderView()}
         </main>
       </div>
+
+      {/* Mobile Bottom Thumb Navigation Bar */}
+      <nav className="mobile-bottom-nav">
+        <button
+          className={`mobile-nav-btn ${activeView === 'dashboard' ? 'active' : ''}`}
+          onClick={() => handleNavigate('dashboard')}
+        >
+          <span className="mobile-nav-icon">🏠</span>
+          <span className="mobile-nav-label">Home</span>
+        </button>
+        <button
+          className={`mobile-nav-btn ${activeView === 'az' ? 'active' : ''}`}
+          onClick={() => handleNavigate('az')}
+        >
+          <span className="mobile-nav-icon">🔤</span>
+          <span className="mobile-nav-label">A-Z Basics</span>
+        </button>
+        <button
+          className={`mobile-nav-btn ${activeView === 'learn' ? 'active' : ''}`}
+          onClick={() => handleNavigate('learn')}
+        >
+          <span className="mobile-nav-icon">✍️</span>
+          <span className="mobile-nav-label">Words (10x)</span>
+        </button>
+        <button
+          className={`mobile-nav-btn ${activeView === 'sentences' ? 'active' : ''}`}
+          onClick={() => handleNavigate('sentences')}
+        >
+          <span className="mobile-nav-icon">📝</span>
+          <span className="mobile-nav-label">Sentences</span>
+        </button>
+        <button
+          className={`mobile-nav-btn ${activeView === 'hangul' ? 'active' : ''}`}
+          onClick={() => handleNavigate('hangul')}
+        >
+          <span className="mobile-nav-icon">🇰🇷</span>
+          <span className="mobile-nav-label">Hangul</span>
+        </button>
+      </nav>
 
       <ToastContainer toasts={toasts} />
       <XPPopups popups={popups} />

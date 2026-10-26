@@ -7,7 +7,8 @@ export default function Sidebar({ activeView, onNavigate, progress, sidebarOpen,
 
   const navItems = [
     { id: 'dashboard', icon: '🏠', label: 'Dashboard' },
-    { id: 'learn', icon: '📚', label: 'Learn Words' },
+    { id: 'az', icon: '🔤', label: 'A-Z Korean Basics' },
+    { id: 'learn', icon: '✍️', label: 'Word Writing (10x)' },
     { id: 'hangul', icon: '🇰🇷', label: 'Hangul Alphabet' },
     { id: 'sentences', icon: '📝', label: 'Sentences' },
     { id: 'quiz', icon: '🎯', label: 'Quiz Game' },

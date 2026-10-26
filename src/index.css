@@ -2140,3 +2140,591 @@ h1, h2, h3, h4, h5, h6 {
   backdrop-filter: blur(20px);
 }
 
+/* ================================================================
+   AI Stroke Recognition & Feedback Banner
+   ================================================================ */
+.ai-feedback-banner {
+  margin: var(--space-md) 0;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(15px);
+  animation: fadeIn 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.ai-feedback-banner.ai-match {
+  background: linear-gradient(135deg, rgba(29, 209, 161, 0.15), rgba(0, 210, 211, 0.12));
+  border-color: rgba(29, 209, 161, 0.4);
+  box-shadow: 0 4px 20px rgba(29, 209, 161, 0.18);
+}
+
+.ai-feedback-banner.ai-improving {
+  background: linear-gradient(135deg, rgba(254, 202, 87, 0.15), rgba(255, 107, 129, 0.1));
+  border-color: rgba(254, 202, 87, 0.4);
+}
+
+.ai-feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xs);
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.ai-badge-chip {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+}
+
+.ai-stars {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+}
+
+.ai-score-pill {
+  font-size: 12px;
+  font-weight: 800;
+  background: rgba(29, 209, 161, 0.25);
+  color: var(--color-accent-mint);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.ai-verdict {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.ai-message {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ── Audio Speech Wave Animation ───────────────────────────── */
+.speaking-active {
+  background: var(--color-primary) !important;
+  color: #fff !important;
+  box-shadow: 0 0 15px rgba(108, 92, 231, 0.6) !important;
+}
+
+.audio-wave-dot {
+  width: 8px;
+  height: 8px;
+  background: #00D2D3;
+  border-radius: 50%;
+  display: inline-block;
+  animation: audioPulse 0.8s infinite alternate;
+}
+
+@keyframes audioPulse {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(1.6); opacity: 1; }
+}
+
+.speed-toggle-btn {
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.speed-toggle-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.mini-speak-icon {
+  background: rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(108, 92, 231, 0.35);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--color-primary-light);
+  margin-left: 6px;
+  vertical-align: middle;
+  transition: transform var(--transition-fast);
+}
+
+.mini-speak-icon:hover {
+  transform: scale(1.2);
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* ================================================================
+   A-Z English to Korean Basics Page
+   ================================================================ */
+.az-page {
+  max-width: 950px;
+  margin: 0 auto;
+}
+
+.az-strip-wrapper {
+  overflow-x: auto;
+  padding-bottom: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  -webkit-overflow-scrolling: touch;
+}
+
+.az-strip {
+  display: flex;
+  gap: 6px;
+  min-width: max-content;
+}
+
+.az-strip-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 54px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  padding: 4px;
+}
+
+.az-strip-btn:hover {
+  background: rgba(108, 92, 231, 0.15);
+  border-color: var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+.az-strip-btn.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  border-color: var(--color-primary-light);
+  box-shadow: 0 4px 14px rgba(108, 92, 231, 0.4);
+  transform: translateY(-3px);
+}
+
+.strip-eng {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.strip-kor {
+  font-family: var(--font-korean);
+  font-size: 13px;
+  color: var(--color-accent-teal);
+  font-weight: 700;
+}
+
+.az-strip-btn.active .strip-kor {
+  color: #fff;
+}
+
+.strip-check {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  font-size: 9px;
+  color: var(--color-accent-mint);
+  font-weight: 900;
+}
+
+/* ── Focus Card ────────────────────────────────────────────── */
+.az-focus-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-2xl);
+  backdrop-filter: blur(20px);
+}
+
+.az-focus-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.az-letter-badges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.badge-eng-big {
+  width: 68px;
+  height: 68px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-accent-gold), #e67e22);
+  color: #12122A;
+  font-size: 38px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(254, 202, 87, 0.35);
+}
+
+.badge-kor-arrow {
+  font-size: 22px;
+  color: var(--text-muted);
+}
+
+.badge-kor-big {
+  width: 68px;
+  height: 68px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
+  font-family: var(--font-korean);
+  font-size: 42px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(108, 92, 231, 0.4);
+}
+
+.badge-syllable-tag {
+  font-family: var(--font-korean);
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  color: var(--color-accent-teal);
+  font-weight: 700;
+}
+
+.az-detail-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-xl);
+  border: 1px solid var(--border-color);
+}
+
+.az-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.az-detail-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.az-detail-val {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.az-hint-highlight {
+  color: var(--color-accent-gold);
+  font-weight: 600;
+}
+
+.az-canvas-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.az-nav-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-lg);
+}
+
+/* ── Full A-Z Reference Library Grid ───────────────────────── */
+.az-library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.az-search-input {
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  color: #fff;
+  font-size: 14px;
+  min-width: 240px;
+  outline: none;
+}
+
+.az-search-input:focus {
+  border-color: var(--color-primary-light);
+}
+
+.az-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--space-md);
+}
+
+.az-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.az-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary-light);
+  box-shadow: var(--shadow-glow-primary);
+  background: rgba(108, 92, 231, 0.08);
+}
+
+.az-card.active {
+  border-color: var(--color-accent-mint);
+  box-shadow: 0 0 16px rgba(29, 209, 161, 0.25);
+}
+
+.az-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.az-card-eng {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--color-accent-gold);
+}
+
+.az-card-speak {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
+}
+
+.az-card-speak:hover {
+  opacity: 1;
+}
+
+.az-card-kor {
+  font-family: var(--font-korean);
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 4px 0;
+}
+
+.az-card-syllable {
+  font-size: 12px;
+  color: var(--color-accent-teal);
+  font-weight: 600;
+}
+
+.az-card-sound {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 4px 0 8px;
+}
+
+.az-card-practice-btn {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary-light);
+  background: rgba(108, 92, 231, 0.15);
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* ================================================================
+   Mobile Top Header & Bottom Thumb Navigation Bar
+   ================================================================ */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: rgba(10, 10, 26, 0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-md);
+  z-index: 99;
+}
+
+.mobile-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.mobile-streak-chip {
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(255, 107, 129, 0.18);
+  border: 1px solid rgba(255, 107, 129, 0.4);
+  color: var(--color-secondary);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(14, 14, 34, 0.96);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-color);
+  z-index: 99;
+  justify-content: space-around;
+  align-items: center;
+  padding: 4px 8px env(safe-area-inset-bottom);
+}
+
+.mobile-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex: 1;
+  padding: 4px 0;
+  transition: all var(--transition-fast);
+}
+
+.mobile-nav-btn:hover {
+  color: var(--text-primary);
+}
+
+.mobile-nav-btn.active {
+  color: var(--color-accent-teal);
+}
+
+.mobile-nav-btn.active .mobile-nav-icon {
+  transform: translateY(-2px);
+}
+
+.mobile-nav-icon {
+  font-size: 20px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.mobile-nav-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* ── Mobile Layout & Orientation Adaptation ────────────────── */
+@media (max-width: 768px) {
+  .mobile-header {
+    display: flex;
+  }
+
+  .mobile-bottom-nav {
+    display: flex;
+  }
+
+  .main-content {
+    padding-top: 66px !important;
+    padding-bottom: 84px !important;
+    padding-left: var(--space-sm) !important;
+    padding-right: var(--space-sm) !important;
+  }
+
+  .canvas-wrapper {
+    height: clamp(250px, 42vh, 320px);
+  }
+
+  .handwriting-container {
+    padding: var(--space-md);
+  }
+
+  .handwriting-korean-guide {
+    font-size: 32px;
+  }
+
+  .handwriting-header {
+    margin-bottom: var(--space-md);
+  }
+
+  .canvas-controls-bar {
+    padding: var(--space-sm);
+    gap: var(--space-xs);
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+}
+
+/* Phone Landscape Mode */
+@media (max-height: 520px) and (orientation: landscape) {
+  .canvas-wrapper {
+    height: 190px !important;
+  }
+
+  .handwriting-korean-guide {
+    font-size: 24px !important;
+  }
+
+  .handwriting-container {
+    padding: var(--space-sm) !important;
+  }
+}
+
+

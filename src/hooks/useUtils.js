@@ -55,17 +55,28 @@ export function formatNumber(num) {
 }
 
 // ── Speak Korean Audio ─────────────────────────────────────
-export function speakKorean(text) {
+export function speakKorean(text, rate = 0.85) {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
   try {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ko-KR';
-    utterance.rate = 0.85; // Natural beginner pace
+    utterance.rate = Math.max(0.5, Math.min(1.5, rate));
+
+    // Try selecting native Korean voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const koreanVoice = voices.find(
+      (v) => v.lang === 'ko-KR' || v.lang.startsWith('ko') || v.name.toLowerCase().includes('korean')
+    );
+    if (koreanVoice) {
+      utterance.voice = koreanVoice;
+    }
+
     window.speechSynthesis.speak(utterance);
   } catch (err) {
     console.error('TTS speech error:', err);
   }
 }
+
 
 
