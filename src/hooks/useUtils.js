@@ -53,3 +53,19 @@ export function formatNumber(num) {
   if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
   return num.toString();
 }
+
+// ── Speak Korean Audio ─────────────────────────────────────
+export function speakKorean(text) {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ko-KR';
+    utterance.rate = 0.85; // Natural beginner pace
+    window.speechSynthesis.speak(utterance);
+  } catch (err) {
+    console.error('TTS speech error:', err);
+  }
+}
+
+

@@ -880,6 +880,22 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-muted);
 }
 
+.char-speak-mini {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.char-speak-mini:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
 .hangul-detail-modal {
   position: fixed;
   inset: 0;
@@ -1575,3 +1591,552 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   color: var(--color-primary-light);
 }
+
+/* ================================================================
+   Digital Handwriting Canvas & Screen Writing Styles
+   ================================================================ */
+
+.writing-top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.category-title-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: var(--bg-card);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  font-weight: 600;
+}
+
+.word-step-count {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ── Mode Switcher ─────────────────────────────────────────── */
+.writing-mode-switcher {
+  display: flex;
+  gap: var(--space-sm);
+  background: rgba(18, 18, 42, 0.85);
+  padding: 6px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--space-lg);
+  backdrop-filter: blur(12px);
+}
+
+.mode-switch-btn {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.mode-switch-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mode-switch-btn.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(108, 92, 231, 0.35);
+}
+
+/* ── Handwriting Canvas Component ───────────────────────────── */
+.handwriting-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-lg);
+}
+
+.handwriting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.handwriting-word-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.handwriting-english {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--color-accent-gold);
+  font-weight: 700;
+}
+
+.handwriting-korean-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.handwriting-korean-guide {
+  font-family: var(--font-korean);
+  font-size: 44px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff, var(--color-primary-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+
+.handwriting-romanization {
+  font-size: 16px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.speak-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(108, 92, 231, 0.18);
+  border: 1px solid rgba(108, 92, 231, 0.4);
+  border-radius: var(--radius-full);
+  color: var(--color-primary-light);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.speak-btn:hover {
+  background: var(--color-primary);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.speak-btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  background: rgba(29, 209, 161, 0.15);
+  border: 1px solid rgba(29, 209, 161, 0.4);
+  border-radius: var(--radius-full);
+  color: var(--color-accent-mint);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.speak-btn-pill:hover {
+  background: var(--color-accent-mint);
+  color: #0A0A1A;
+}
+
+.repetition-badge {
+  text-align: right;
+  background: rgba(255, 255, 255, 0.04);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.rep-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.rep-counter {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.rep-num {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--color-accent-mint);
+  line-height: 1;
+}
+
+.rep-total {
+  font-size: 18px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.rep-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ── Canvas Wrapper ────────────────────────────────────────── */
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  background: radial-gradient(circle at center, #161633 0%, #0d0d21 100%);
+  border-radius: var(--radius-lg);
+  border: 2px solid rgba(108, 92, 231, 0.35);
+  box-shadow: inset 0 2px 20px rgba(0, 0, 0, 0.6), 0 0 25px rgba(108, 92, 231, 0.15);
+  overflow: hidden;
+  margin-bottom: var(--space-md);
+  user-select: none;
+  touch-action: none;
+}
+
+.canvas-badge-tip {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  z-index: 2;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: rgba(10, 10, 26, 0.7);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+}
+
+.drawing-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: crosshair;
+}
+
+/* ── Canvas Controls Bar ───────────────────────────────────── */
+.canvas-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.control-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.color-palette {
+  display: flex;
+  gap: 6px;
+}
+
+.color-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.color-swatch:hover {
+  transform: scale(1.18);
+}
+
+.color-swatch.active {
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  transform: scale(1.22);
+}
+
+.brush-sizes {
+  display: flex;
+  gap: 4px;
+}
+
+.size-btn {
+  padding: 4px 10px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.size-btn:hover {
+  background: var(--bg-glass-strong);
+  color: var(--text-primary);
+}
+
+.size-btn.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary-light);
+}
+
+.tool-toggle-btn {
+  padding: 5px 12px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tool-toggle-btn:hover {
+  color: var(--text-primary);
+}
+
+.tool-toggle-btn.active {
+  background: rgba(0, 210, 211, 0.15);
+  border-color: rgba(0, 210, 211, 0.4);
+  color: var(--color-accent-teal);
+}
+
+.btn-danger-subtle {
+  background: rgba(255, 107, 129, 0.12);
+  border: 1px solid rgba(255, 107, 129, 0.3);
+  color: var(--color-secondary);
+}
+
+.btn-danger-subtle:hover:not(:disabled) {
+  background: var(--color-secondary);
+  color: #fff;
+}
+
+/* ── Primary Submit Row ────────────────────────────────────── */
+.canvas-submit-row {
+  margin-bottom: var(--space-xl);
+}
+
+.submit-attempt-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 25px rgba(108, 92, 231, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+/* ── 10 Repetitions Shelf / Gallery ────────────────────────── */
+.attempts-gallery {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.gallery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.gallery-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .gallery-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.gallery-card {
+  position: relative;
+  aspect-ratio: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-normal);
+}
+
+.gallery-card.completed {
+  border-color: var(--color-accent-mint);
+  box-shadow: 0 0 10px rgba(29, 209, 161, 0.25);
+  background: rgba(29, 209, 161, 0.05);
+}
+
+.gallery-card.active {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 12px rgba(108, 92, 231, 0.4);
+  animation: pulse 1.8s infinite;
+}
+
+.gallery-card.locked {
+  opacity: 0.4;
+}
+
+.card-number {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 700;
+  z-index: 1;
+}
+
+.card-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.card-placeholder {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ── Virtual Korean Keyboard ────────────────────────────────── */
+.virtual-hangul-bar {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.virtual-hangul-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+  font-weight: 500;
+}
+
+.virtual-hangul-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.v-key-btn {
+  font-family: var(--font-korean);
+  font-size: 17px;
+  font-weight: 600;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 8px;
+  background: var(--bg-glass-strong);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v-key-btn:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(108, 92, 231, 0.3);
+}
+
+.v-key-btn:active {
+  transform: translateY(0);
+}
+
+.v-key-special {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.writing-word-korean-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+.writing-hint-banner {
+  text-align: center;
+  padding: var(--space-md);
+  background: rgba(254, 202, 87, 0.12);
+  border-radius: var(--radius-md);
+  margin: var(--space-md) 0;
+  color: var(--color-accent-gold);
+  font-size: 14px;
+}
+
+.word-completed-banner {
+  text-align: center;
+  margin-top: var(--space-2xl);
+  padding: var(--space-2xl);
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.12), rgba(29, 209, 161, 0.12));
+  border: 1px solid rgba(29, 209, 161, 0.3);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(20px);
+}
+
