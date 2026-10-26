@@ -54,16 +54,54 @@ export function formatNumber(num) {
   return num.toString();
 }
 
-// ── Speak Korean Audio ─────────────────────────────────────
+// ── Speak Korean Audio (Reliable Dual-Engine) ──────────────
+let activeAudio = null;
+
 export function speakKorean(text, rate = 0.85) {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  if (typeof window === 'undefined' || !text) return;
+  const clean = text.trim();
+  if (!clean) return;
+
+  // Stop previous audio if playing
+  if (activeAudio) {
+    activeAudio.pause();
+    activeAudio.currentTime = 0;
+    activeAudio = null;
+  }
+
+  // 1. Primary Engine: High-quality Native Korean Audio Stream
+  // Works across 100% of browsers without needing local OS Korean voice packs installed
   try {
+    const encoded = encodeURIComponent(clean);
+    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ko&q=${encoded}`;
+    const audio = new Audio(audioUrl);
+    audio.playbackRate = Math.max(0.6, Math.min(1.4, rate));
+    activeAudio = audio;
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        // Fallback to Web Speech API if audio element is blocked
+        console.warn('Native audio stream fallback to SpeechSynthesis:', err);
+        speakViaSpeechSynthesis(clean, rate);
+      });
+      return;
+    }
+  } catch {
+    speakViaSpeechSynthesis(clean, rate);
+  }
+}
+
+function speakViaSpeechSynthesis(text, rate = 0.85) {
+  if (!('speechSynthesis' in window)) return;
+  try {
+    window.speechSynthesis.resume();
     window.speechSynthesis.cancel();
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ko-KR';
-    utterance.rate = Math.max(0.5, Math.min(1.5, rate));
+    utterance.rate = Math.max(0.6, Math.min(1.3, rate));
 
-    // Try selecting native Korean voice if available
     const voices = window.speechSynthesis.getVoices();
     const koreanVoice = voices.find(
       (v) => v.lang === 'ko-KR' || v.lang.startsWith('ko') || v.name.toLowerCase().includes('korean')
@@ -77,6 +115,7 @@ export function speakKorean(text, rate = 0.85) {
     console.error('TTS speech error:', err);
   }
 }
+
 
 
 

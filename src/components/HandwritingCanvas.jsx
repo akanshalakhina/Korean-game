@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { speakKorean } from '../hooks/useUtils';
 import { evaluateHandwriting } from '../utils/aiHandwritingChecker';
+import VoicePronunciationChecker from './VoicePronunciationChecker';
 
 const BRUSH_COLORS = [
   { name: 'Korean Indigo', color: '#6C5CE7' },
@@ -36,7 +37,9 @@ export default function HandwritingCanvas({
   const [showGrid, setShowGrid] = useState(true);
   const [guideOpacity, setGuideOpacity] = useState(0.25);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [speechRate, setSpeechRate] = useState(0.8); // 0.8 beginner friendly
+  const [speechRate, setSpeechRate] = useState(0.8);
+  const [showVoiceTrainer, setShowVoiceTrainer] = useState(false);
+
 
   // AI Evaluation State
   const [aiResult, setAiResult] = useState(null);
@@ -306,7 +309,7 @@ export default function HandwritingCanvas({
               title="Click to hear Korean pronunciation"
             >
               <span className="speak-icon">🔊</span>
-              <span>{isSpeaking ? 'Bol raha hai...' : 'Pronounce'}</span>
+              <span>{isSpeaking ? 'Bol raha hai...' : '🔊 Listen'}</span>
               {isSpeaking && <span className="audio-wave-dot" />}
             </button>
             <button
@@ -315,6 +318,13 @@ export default function HandwritingCanvas({
               title="Change speech speed"
             >
               {speechRate === 0.8 ? '🐢 Slow (0.8x)' : '⚡ Normal (1.0x)'}
+            </button>
+            <button
+              className={`voice-toggle-btn ${showVoiceTrainer ? 'active' : ''}`}
+              onClick={() => setShowVoiceTrainer(!showVoiceTrainer)}
+              title="Test pronunciation with microphone"
+            >
+              🎙️ {showVoiceTrainer ? 'Hide Voice Checker' : 'Test My Pronunciation'}
             </button>
           </div>
           <span className="handwriting-romanization">
@@ -332,6 +342,17 @@ export default function HandwritingCanvas({
           <div className="rep-subtitle">Times Written on Screen</div>
         </div>
       </div>
+
+      {/* Voice Trainer Section (Collapsible) */}
+      {showVoiceTrainer && (
+        <div style={{ marginBottom: 'var(--space-md)' }}>
+          <VoicePronunciationChecker
+            targetKorean={targetWord}
+            targetRomanization={romanization}
+            english={english}
+          />
+        </div>
+      )}
 
       {/* Screen Canvas Container (Mobile Touch & Pointer Friendly) */}
       <div className="canvas-wrapper">

@@ -4,6 +4,7 @@ import { recordWordPractice, addXP, unlockAchievement } from '../store/progressS
 import { speakKorean } from '../hooks/useUtils';
 import confetti from 'canvas-confetti';
 import HandwritingCanvas from '../components/HandwritingCanvas';
+import VoicePronunciationChecker from '../components/VoicePronunciationChecker';
 
 const REQUIRED_WRITES = 10;
 
@@ -253,6 +254,15 @@ export default function WritingPractice({ progress, onProgressUpdate, addToast, 
               </button>
             </div>
             <div className="writing-word-romanization">{currentWord.romanization}</div>
+          </div>
+
+          {/* Voice Pronunciation Practice & AI Checker */}
+          <div style={{ marginBottom: 'var(--space-lg)' }}>
+            <VoicePronunciationChecker
+              targetKorean={currentWord.korean}
+              targetRomanization={currentWord.romanization}
+              english={currentWord.english}
+            />
           </div>
 
           {/* Progress Bar */}

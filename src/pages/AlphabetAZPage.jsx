@@ -3,6 +3,7 @@ import { alphabetAZ, XP_REWARDS } from '../data/koreanData';
 import { addXP, unlockAchievement } from '../store/progressStore';
 import { speakKorean } from '../hooks/useUtils';
 import HandwritingCanvas from '../components/HandwritingCanvas';
+import VoicePronunciationChecker from '../components/VoicePronunciationChecker';
 import confetti from 'canvas-confetti';
 
 export default function AlphabetAZPage({ progress, onProgressUpdate, addToast, showXP }) {
@@ -165,6 +166,15 @@ export default function AlphabetAZPage({ progress, onProgressUpdate, addToast, s
             <span className="az-detail-label">Writing Stroke Guide:</span>
             <span className="az-detail-val">✍️ {selectedLetter.strokeHint}</span>
           </div>
+        </div>
+
+        {/* AI Voice Pronunciation & Speaking Practice */}
+        <div style={{ marginBottom: 'var(--space-xl)' }}>
+          <VoicePronunciationChecker
+            targetKorean={selectedLetter.syllable || selectedLetter.hangul}
+            targetRomanization={selectedLetter.romanization}
+            english={`Letter ${selectedLetter.letter}`}
+          />
         </div>
 
         {/* 10-Times Screen Writing Canvas with AI Verification */}
